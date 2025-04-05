@@ -1,0 +1,30 @@
+---
+- name: Create app directory
+  file:
+    path: /opt/flask-app
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Copy app tarball
+  copy:
+    src: files/flask-app.tar.gz
+    dest: /opt/flask-app/flask-app.tar.gz
+
+- name: Extract tarball
+  unarchive:
+    src: /opt/flask-app/flask-app.tar.gz
+    dest: /opt/flask-app
+    remote_src: yes
+
+- name: Install requirements
+  pip:
+    requirements: /opt/flask-app/requirements.txt
+
+- name: Run Flask App
+  shell: nohup python3 /opt/flask-app/app.py &
+  args:
+    chdir: /opt/flask-app
+---
+# tasks file for roles/app_deploy
